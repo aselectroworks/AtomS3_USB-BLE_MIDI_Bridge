@@ -321,12 +321,14 @@ void setup() {
     tinyusb_add_string_descriptor("USB-BLE MIDI Bridge");
 
     // Initialize USB MIDI Device
+    USB.onEvent(usbEventCallback);
     UsbMIDI[0] = &UsbMIDI_1;
     UsbMIDI[1] = &UsbMIDI_2;
     UsbMIDI[2] = &UsbMIDI_3;
     for (uint8_t i = 0; i < USB_MIDI_NUM_CABLES; i++) {
         UsbMIDI[i]->begin(MIDI_CHANNEL_OMNI);
     }
+    USB.begin();
     xTaskCreatePinnedToCore(
         UsbMidiReadTask,  // See FreeRTOS for more multitask info
         "USBMIDI-READ", 4096, NULL, 1, &UsbMidiReadTask_taskHandle,
